@@ -1,5 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
-import { createRoot, useEffect, useState } from '@wordpress/element';
+import { createRoot, useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import '../css/frontend.scss';
 
@@ -46,21 +46,39 @@ function GroupItem( { group, type } ) {
 
 function GroupsWidget( { config } ) {
 	const [ type, setType ] = useState( config.defaultGroup );
-	const [ data, setData ] = useState( { groups: [], total: 0 } );
-	const [ loading, setLoading ] = useState( true );
+	const [ data, setData ] = useState( config.initialData );
+	const [ loading, setLoading ] = useState( false );
 	const [ error, setError ] = useState( '' );
+	const requestController = useRef( null );
+
 	useEffect( () => {
-		const controller = new AbortController();
+		return () => requestController.current?.abort();
+	}, [] );
+
+	const selectTab = ( nextType ) => {
+		requestController.current?.abort();
+		requestController.current = new AbortController();
+		const controller = requestController.current;
+
+		setType( nextType );
 		setLoading( true );
 		setError( '' );
+
 		apiFetch( {
-			url: `${ config.restUrl }?type=${ type }&per_page=${ config.maxGroups }`,
+			url: `${ config.restUrl }?type=${ nextType }&per_page=${ config.maxGroups }`,
 			headers: { 'X-WP-Nonce': config.restNonce },
 			signal: controller.signal,
 		} )
-			.then( setData )
+			.then( ( response ) => {
+				if ( requestController.current === controller ) {
+					setData( response );
+				}
+			} )
 			.catch( ( e ) => {
-				if ( e.name !== 'AbortError' ) {
+				if (
+					requestController.current === controller &&
+					e.name !== 'AbortError'
+				) {
 					setError(
 						e.message ||
 							__(
@@ -70,9 +88,12 @@ function GroupsWidget( { config } ) {
 					);
 				}
 			} )
-			.finally( () => setLoading( false ) );
-		return () => controller.abort();
-	}, [ type, config ] );
+			.finally( () => {
+				if ( requestController.current === controller ) {
+					setLoading( false );
+				}
+			} );
+	};
 	const title = config.linkTitle ? (
 		<a href={ config.groupsDirectoryUrl }>{ config.title }</a>
 	) : (
@@ -89,7 +110,7 @@ function GroupsWidget( { config } ) {
 						role="tab"
 						aria-selected={ type === tab[ 0 ] }
 						className={ type === tab[ 0 ] ? 'is-active' : '' }
-						onClick={ () => setType( tab[ 0 ] ) }
+						onClick={ () => selectTab( tab[ 0 ] ) }
 					>
 						{ tab[ 1 ] }
 					</button>

@@ -1,6 +1,7 @@
 <?php
 namespace Wp\ReactWidget\Widget;
 use Wp\ReactWidget\Assets\FrontendAssets;
+use Wp\ReactWidget\Groups\GroupsRepository;
 defined( 'ABSPATH' ) || exit;
 final class ReactBbGroupsWidget extends \WP_Widget {
 	public function __construct() {
@@ -8,10 +9,12 @@ final class ReactBbGroupsWidget extends \WP_Widget {
 	}
 	public function widget( $args, $instance ) {
 		$settings = $this->normalize( $instance );
+		$initial_data = ( new GroupsRepository() )->get_groups( $settings['group_default'], $settings['max_groups'] );
 		FrontendAssets::enqueue();
 		$config = array(
 			'title' => apply_filters( 'widget_title', $settings['title'], $instance, $this->id_base ),
 			'linkTitle' => $settings['link_title'], 'maxGroups' => $settings['max_groups'], 'defaultGroup' => $settings['group_default'],
+			'initialData' => $initial_data,
 			'restUrl' => rest_url( 'wp-react-widget/v1/groups' ), 'restNonce' => wp_create_nonce( 'wp_rest' ),
 			'groupsDirectoryUrl' => bp_get_groups_directory_permalink(),
 		);
