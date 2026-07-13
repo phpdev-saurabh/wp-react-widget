@@ -1,0 +1,20 @@
+{
+  "name": "wp-react-widget",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React frontend for the WP React Widget plugin.",
+  "scripts": {
+    "start": "wp-scripts start --source-path=resources/js --output-path=build",
+    "build": "wp-scripts build --source-path=resources/js --output-path=build",
+    "lint:js": "wp-scripts lint-js resources/js"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^30.15.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^7.26.0",
+    "@wordpress/element": "^6.26.0",
+    "@wordpress/i18n": "^5.26.0"
+  }
+}

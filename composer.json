@@ -1,0 +1,16 @@
+{
+  "name": "wp/react-widget",
+  "description": "A React-powered BuddyBoss groups widget for WordPress.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Wp\\ReactWidget\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "require": {}
+}
