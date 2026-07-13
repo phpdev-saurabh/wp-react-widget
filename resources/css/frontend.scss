@@ -1,32 +1,8 @@
 .wprw-groups-widget {
-  &__tabs {
-    display: flex;
-    gap: 1.25rem;
-    margin: 0 0 1rem;
-    border-bottom: 1px solid #e6e8ec;
-  }
-  &__tabs button {
-    padding: 0 0 0.65rem;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    color: #8a8f98;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  &__tabs button.is-active {
-    border-color: currentColor;
-    color: inherit;
-  }
-  &__list {
+	&__list {
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-  .is-error {
-    color: #b32d2e;
   }
 }
 .wprw-group {

@@ -1,6 +1,5 @@
 <?php
 namespace Wp\ReactWidget;
-use Wp\ReactWidget\Rest\RestRegistrar;
 use Wp\ReactWidget\Support\Activator;
 use Wp\ReactWidget\Support\DependencyChecker;
 use Wp\ReactWidget\Support\ServiceRegistry;
@@ -14,7 +13,7 @@ final class Plugin {
 	}
 	public function register() {
 		load_plugin_textdomain( 'wp-react-widget', false, dirname( WPRW_BASENAME ) . '/languages' );
-		( new ServiceRegistry( array( new DependencyChecker(), new WidgetRegistrar(), new RestRegistrar() ) ) )->register();
+		( new ServiceRegistry( array( new DependencyChecker(), new WidgetRegistrar() ) ) )->register();
 	}
 	public static function activate() { Activator::activate(); }
 	public static function deactivate() { Activator::deactivate(); }

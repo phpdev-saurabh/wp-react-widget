@@ -5,17 +5,20 @@ use Wp\ReactWidget\Groups\GroupsRepository;
 defined( 'ABSPATH' ) || exit;
 final class ReactBbGroupsWidget extends \WP_Widget {
 	public function __construct() {
-		parent::__construct( 'wprw_react_bb_groups', __( 'React BB Groups Widget', 'wp-react-widget' ), array( 'classname' => 'widget_wprw_react_bb_groups buddypress widget', 'description' => __( 'A React-powered list of BuddyBoss groups.', 'wp-react-widget' ), 'customize_selective_refresh' => true ) );
+		parent::__construct( 'wprw_react_bb_groups', __( 'React BB Groups Widget', 'wp-react-widget' ), array( 'classname' => 'widget_wprw_react_bb_groups widget_bp_groups_widget buddypress widget', 'description' => __( 'A React-powered list of BuddyBoss groups.', 'wp-react-widget' ), 'customize_selective_refresh' => true ) );
 	}
 	public function widget( $args, $instance ) {
 		$settings = $this->normalize( $instance );
-		$initial_data = ( new GroupsRepository() )->get_groups( $settings['group_default'], $settings['max_groups'] );
+		$repository = new GroupsRepository();
+		$groups_data = array();
+		foreach ( array( 'newest', 'active', 'popular' ) as $group_type ) {
+			$groups_data[ $group_type ] = $repository->get_groups( $group_type, $settings['max_groups'] );
+		}
 		FrontendAssets::enqueue();
 		$config = array(
 			'title' => apply_filters( 'widget_title', $settings['title'], $instance, $this->id_base ),
 			'linkTitle' => $settings['link_title'], 'maxGroups' => $settings['max_groups'], 'defaultGroup' => $settings['group_default'],
-			'initialData' => $initial_data,
-			'restUrl' => rest_url( 'wp-react-widget/v1/groups' ), 'restNonce' => wp_create_nonce( 'wp_rest' ),
+			'groupsData' => $groups_data,
 			'groupsDirectoryUrl' => bp_get_groups_directory_permalink(),
 		);
 		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
