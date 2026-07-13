@@ -3,7 +3,8 @@
  * Plugin Name: WP React Widget
  * Description: Adds a React-powered BuddyBoss groups widget with native WordPress widget settings.
  * Version: 1.0.0
- * Author: WP
+ * Author:            Saurabh Kumar
+ * Author URI:        https://github.com/phpdev-saurabh
  * Text Domain: wp-react-widget
  * Domain Path: /languages
  * Requires at least: 6.0
